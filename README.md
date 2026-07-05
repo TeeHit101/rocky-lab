@@ -36,17 +36,20 @@ Kör följande skript för att kontrollera att virtualization är aktivt, att de
 ./scripts/check-host.sh
 ```
 
-### 2. Skapa diskar och cloud-init för en VM
-För att skapa disken (som en copy-on-write-overlay mot bas-avbildningen) samt generera en ISO-avbildning för cloud-init (`seed.iso`), kör följande kommandon (kräver `sudo` för att skriva till `/var/lib/libvirt/images`):
+### 2. Skapa och installera alla maskiner (Snabbalternativ)
+För att enkelt ta bort eventuella gamla maskiner och sätta upp alla tre maskiner (`rocky-mgmt`, `rocky-node1`, `rocky-node2`) från grunden med ett kommando:
 ```bash
-# Ersätt <vm-namn> med t.ex. rocky-mgmt
-sudo ./scripts/create-vm.sh <vm-namn>
-sudo ./scripts/create-cloudinit.sh <vm-namn>
+sudo ./scripts/recreate-all.sh
 ```
 
-### 3. Installera och starta VM:en
-Importera och starta den virtuella maskinen i libvirt med:
+### 3. Skapa och starta en enskild VM manuellt
+Om du vill konfigurera eller återskapa en specifik maskin för sig:
 ```bash
+# 1. Skapa disk och cloud-init seed
+sudo ./scripts/create-vm.sh <vm-namn>
+sudo ./scripts/create-cloudinit.sh <vm-namn>
+
+# 2. Importera och starta i libvirt
 ./scripts/install-vm.sh <vm-namn>
 ```
 *Skriptet kör `virt-install` med `--boot uefi` och importerar diskarna utan grafik (`--graphics none`).*
@@ -76,8 +79,8 @@ virsh console <vm-namn>
 *(Tryck på `Ctrl + ]` för att avsluta konsolsessionen).*
 
 ### Rensa och ta bort en VM
-Om du vill ta bort en virtuell maskin helt:
+Om du vill ta bort en virtuell maskin helt (inklusive diskar och UEFI NVRAM-konfiguration):
 ```bash
 virsh destroy <vm-namn>
-virsh undefine <vm-namn> --remove-all-storage
+virsh undefine <vm-namn> --remove-all-storage --nvram
 ```
