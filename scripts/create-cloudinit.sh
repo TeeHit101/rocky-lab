@@ -7,7 +7,13 @@ source "${SCRIPT_DIR}/../config/config.sh"
 
 VM_NAME="$1"
 
-SSH_KEY=$(cat ~/.ssh/id_ed25519.pub)
+if [ -n "${SUDO_USER:-}" ]; then
+  USER_HOME=$(getent passwd "$SUDO_USER" | cut -d: -f6)
+else
+  USER_HOME="$HOME"
+fi
+
+SSH_KEY=$(cat "${USER_HOME}/.ssh/id_ed25519.pub")
 
 WORKDIR=$(mktemp -d)
 
