@@ -25,6 +25,13 @@ users:
     ssh_authorized_keys:
       - ${SSH_KEY}
 
+  - name: ansible
+    groups: wheel
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    ssh_authorized_keys:
+      - ${SSH_KEY}
+
 package_update: true
 
 packages:
