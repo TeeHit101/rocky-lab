@@ -79,7 +79,18 @@ virsh console <vm-namn>
 *(Tryck på `Ctrl + ]` för att avsluta konsolsessionen).*
 
 ### Rensa och ta bort en VM
-Om du vill ta bort en virtuell maskin helt (inklusive diskar och UEFI NVRAM-konfiguration):
+
+För att ta bort en enskild virtuell maskin och dess tillhörande diskar:
+```bash
+sudo ./scripts/delete-vm.sh <vm-namn>
+```
+
+För att ta bort alla virtuella maskiner i labbmiljön på en gång:
+```bash
+sudo ./scripts/delete-all.sh
+```
+
+Alternativt kan du göra det manuellt via `virsh`:
 ```bash
 virsh destroy <vm-namn>
 virsh undefine <vm-namn> --remove-all-storage --nvram
